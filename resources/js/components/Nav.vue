@@ -32,8 +32,8 @@
                             to="/#home_tag"
                             :class="{
                                 nav__link__active:
-                                    activeSection === 'home_tag' &&
-                                    $route.path === '/' &&
+                                    activeSection === 'home_tag' || activeSection ==='' &&
+                                    $route.path === '/' && 
                                     !isMobileView,
                             }"
                             class="block py-4 md:py-2 mx-2 w-full"

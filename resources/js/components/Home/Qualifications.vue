@@ -1,5 +1,9 @@
 <template>
-    <section class="qualification section" id="qualification_tag">
+    <section
+        class="qualification section"
+        id="qualification_tag"
+        v-if="educations"
+    >
         <p class="text-center py-4">My Personal Journey</p>
         <h1 class="text-center text-3xl font-bold">Qualification</h1>
 
@@ -105,6 +109,7 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
 
 const activeTab = ref(1);
@@ -113,42 +118,22 @@ const toggleTab = (tab) => {
     activeTab.value = tab;
 };
 
-// Dummy data for educations and experiences
-const educations = [
-    {
-        title: "BE EC",
-        subtitle: "TU Magway",
-        period: "2014-2019",
-    },
-    {
-        title: "Web Design",
-        subtitle: "LogicUnicon - Class",
-        period: "2020-2021",
-    },
-    {
-        title: "Web Development",
-        subtitle: "LogicUnicon - Class",
-        period: "2021-2021",
-    },
-];
-
-const experiences = [
-    {
-        title: "Junior Engineer",
-        subtitle: "GlobalNet - (5bb)",
-        period: "2021-2022",
-    },
-    {
-        title: "Software Engineer",
-        subtitle: "Bliss Stock - JPN",
-        period: "2022-Present",
-    },
-    {
-        title: "Web Developer",
-        subtitle: "Freelance",
-        period: "2022-Present",
-    },
-];
+const educations = ref(null);
+const experiences = ref(null);
+const api_url = "/admin/get-qualification";
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+axios
+    .get(api_url)
+    .then((response) => {
+        educations.value = response.data.educations;
+        experiences.value = response.data.experiences;
+    })
+    .catch((error) => {
+        console.error("Error fetching setting: ", error);
+    });
 </script>
 
 <style scoped>

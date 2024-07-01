@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +13,6 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite('resources/js/app.js')
-    @vite('resources/css/app.css')
 </head>
 
 <body>

@@ -1,5 +1,5 @@
 <template>
-    <section id="home_tag" class="pt-24">
+    <section id="home_tag" v-if="setting" class="pt-24">
         <div
             class="w-11/12 mt-10 lg:w-8/12 m-auto grid gap-4 grid-cols-1 md:grid-cols-2 items-center"
         >
@@ -7,24 +7,26 @@
                 <div class="pr-5 md:pr-20">
                     <ul>
                         <li class="py-3">
-                            <a href="#">
+                            <a :href="setting.facebook_link">
                                 <i class="fa-brands fa-facebook fa-xl"></i
                             ></a>
                         </li>
                         <li class="py-3">
-                            <a href="#"
+                            <a :href="setting.instagram_link"
                                 ><i class="fa-brands fa-instagram fa-xl"></i
                             ></a>
                         </li>
                         <li class="py-3">
-                            <a href="#">
+                            <a :href="setting.github_link">
                                 <i class="fa-brands fa-github fa-xl"></i>
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div>
-                    <h1 class="text-5xl font-extrabold my-5">Hein Htet</h1>
+                    <h1 class="text-5xl font-extrabold my-5">
+                        {{ setting.name }}
+                    </h1>
                     <p class="my-5 text-2xl">
                         I am <span class="typed_text">{{ typeValue }}</span>
                         <span class="cursor" :class="{ 'typing ': typeStatus }"
@@ -32,8 +34,7 @@
                         >
                     </p>
                     <p>
-                        I'm full stack developer based in Yangon, and I'm very
-                        passionate and deticated to my work.
+                        {{ setting.description }}
                     </p>
                     <a
                         href="#"
@@ -53,31 +54,59 @@
         </div>
     </section>
 
-    <About :aboutImage="aboutImage" :cv="cv" />
+    <About
+        v-if="setting"
+        :setting="setting"
+        :aboutImage="aboutImage"
+        :cv="cv"
+    />
     <Skill />
     <Service />
     <Qualifications />
-    <Contact />
+    <Contact v-if="setting" :setting="setting" />
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import About from "./About.vue";
 import Skill from "./Skill.vue";
 import Service from "./Services.vue";
 import Qualifications from "./Qualifications.vue";
 import Contact from "./Contact.vue";
-const profileImage = "/img/profile.png";
-const aboutImage = "/img/about.jpg";
-const cv = "/file/resume.pdf";
+import axios from "axios";
+
+const aboutImage = ref(null);
+const cv = ref(null);
 const typeValue = ref("");
 const typeStatus = ref(false);
-const typeArray = ["Web Developer", "Web Designer", "Software Engineer"];
+let typeArray = null;
 const typingSpeed = ref(100);
 const erasingSpeed = ref(100);
 const nextTextDelay = ref(1000);
 const typeArrayIndex = ref(0);
 const charIndex = ref(0);
+const setting = ref(null);
+
+onMounted(() => {
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+
+    axios
+        .get("admin/setting-data")
+        .then((response) => {
+            setting.value = response.data;
+            typeArray = JSON.parse(setting.value.position_array);
+            cv.value = `storage/file/${setting.value.cv_pdf}`;
+            aboutImage.value = `/img/${setting.value.photo}`;
+            setTimeout(typeText, nextTextDelay.value + 20);
+        })
+        .catch((error) => {
+            console.error("Error fetching setting: ", error);
+        });
+});
+
 const typeText = () => {
     if (charIndex.value < typeArray[typeArrayIndex.value].length) {
         if (!typeStatus.value) typeStatus.value = true;
@@ -109,7 +138,6 @@ const eraseText = () => {
         setTimeout(typeText, typingSpeed.value + 100);
     }
 };
-setTimeout(typeText, nextTextDelay.value + 20);
 </script>
 
 <style scoped>

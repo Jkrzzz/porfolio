@@ -27,8 +27,13 @@
                     <div class="contact__card">
                         <i class="fa-solid fa-phone contact__card-icon"> </i>
                         <h3 class="contact__card-title">Phone</h3>
-                        <span class="contact__card-data">+959-790-321-825</span>
-                        <a href="tel:+959790321825" class="contact__button">
+                        <span class="contact__card-data">{{
+                            formattedPhoneNumber
+                        }}</span>
+                        <a
+                            :href="`tel:${setting.phone}`"
+                            class="contact__button"
+                        >
                             Write me
                             <i
                                 class="fa-solid fa-arrow-right contact__button-icon"
@@ -43,7 +48,7 @@
                         <h3 class="contact__card-title">Messenger</h3>
                         <span class="contact__card-data"></span>
                         <a
-                            href="https://m.me/hein.htet.10420"
+                            :href="setting.messenger_link"
                             class="contact__button"
                         >
                             Write me
@@ -112,7 +117,20 @@
     </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { defineProps } from "vue";
+const props = defineProps(["setting"]);
+const formattedPhoneNumber = formatPhoneNumber(props.setting.phone);
+
+// Function to format phone number
+function formatPhoneNumber(phone) {
+    // Format the phone number as desired, for example:
+    return `${phone.slice(0, 4)}-${phone.slice(4, 7)}-${phone.slice(
+        7,
+        10
+    )}-${phone.slice(10)}`;
+}
+</script>
 
 <style>
 .contact__container {

@@ -74,7 +74,7 @@ const props = defineProps(["scrollTo"]);
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 .footer__container {
-    padding: 2rem 0 6rem;
+    padding: 1rem 0 2rem;
 }
 .footer__title,
 .footer__link {
@@ -83,7 +83,6 @@ const props = defineProps(["scrollTo"]);
 
 .footer__title {
     text-align: center;
-    margin-bottom: var(--mb-2);
 }
 
 .footer__link:hover {
@@ -114,7 +113,7 @@ const props = defineProps(["scrollTo"]);
 }
 .footer__copy {
     display: block;
-    margin-top: 4.5rem;
+    margin-top: 2rem;
     color: var(--title-color);
     text-align: center;
     font-size: var(--smaller-font-size);

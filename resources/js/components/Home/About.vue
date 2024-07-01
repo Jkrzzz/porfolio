@@ -23,7 +23,9 @@
                         >
                             Experience
                         </h5>
-                        <p class="text-gray-900 text__p">2 Years Working</p>
+                        <p v-if="experienceYears" class="text-gray-900 text__p">
+                            {{ experienceYears }} Years Working
+                        </p>
                     </div>
                     <div
                         href="#"
@@ -35,7 +37,9 @@
                         >
                             Completed
                         </h5>
-                        <p class="text-gray-900 text__p">10 + projects</p>
+                        <p class="text-gray-900 text__p">
+                            {{ setting.completed_projects }} + projects
+                        </p>
                     </div>
                     <div
                         href="#"
@@ -51,9 +55,7 @@
                     </div>
                 </div>
                 <p class="py-6 my-5">
-                    Full Stack Developer,I create web pages with UI/UX user
-                    interface, I have experinece and my clients are happy with
-                    projects carried out.
+                    {{ setting.about_description }}
                 </p>
                 <a
                     :href="cv"
@@ -72,8 +74,25 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
-const props = defineProps(["aboutImage", "cv"]);
+import { computed, defineProps } from "vue";
+const props = defineProps(["aboutImage", "cv", "setting"]);
+
+const calculateExperience = (startDate) => {
+    const experienceDate = new Date(startDate);
+    const currentDate = new Date();
+    const differenceInMs = currentDate - experienceDate;
+    const yearsDifference = Math.floor(
+        differenceInMs / (1000 * 60 * 60 * 24 * 365.25)
+    );
+    return yearsDifference;
+};
+// Compute the experience in years from the provided setting
+const experienceYears = computed(() => {
+    if (props.setting && props.setting.experience_year) {
+        return calculateExperience(props.setting.experience_year);
+    }
+    return null; // Return null if the setting or experience_year is not available
+});
 </script>
 
 <style scoped>
